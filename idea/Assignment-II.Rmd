@@ -1,0 +1,69 @@
+---
+title: "Assignment-II-21227"
+author: "Akash Bairagi"
+date: '2022-03-13'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r cars}
+library("tidyverse")
+library("sf")
+library("viridis")
+```
+
+
+#### India's Shape File
+```{r}
+india_states_sf <- read_sf("IND_adm1/IND_adm1.shp")
+
+ggplot(india_states_sf)+
+  geom_sf()
+```
+
+
+
+#### India's Vaccination data
+```{r}
+india_vaccination <- read_csv("India_Vaccination_Data.csv")[1:3]
+india_vaccination
+```
+
+#### India's Active Cases data
+```{r}
+india_activeCases <- read_csv("India_ActiveCases_Data.csv")[1:3]
+india_activeCases
+```
+
+
+#### Merging
+```{r}
+names(india_states_sf)
+names(india_vaccination)
+names(india_activeCases) 
+
+merged_data <- merge(india_states_sf, select(india_vaccination, -Name), by.x="ID_1", by.y="ID")
+merged_data <- merge(merged_data, select(india_activeCases, -NAME), by.x="ID_1", by.y="ID")
+
+merged_data
+```
+
+#### India's Covid Status
+```{r}
+
+ggplot(merged_data)+
+  geom_sf(aes(fill=vaccination))+
+  geom_point(
+    aes(size = Active_Cases, geometry=geometry),
+    stat="sf_coordinates",alpha=0.5,
+    color="#FF0000"
+  )+ 
+  scale_fill_viridis(begin=0.2, end=.5, direction=1, option = "turbo")+
+  labs(title="India's Covid Status", subtitle="(as on 13-03-22)")
+  
+```
+

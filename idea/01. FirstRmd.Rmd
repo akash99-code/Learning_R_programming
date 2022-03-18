@@ -1,0 +1,59 @@
+---
+title: "FirstRmd.Rmd"
+output: 
+  html_document: 
+    number_sections: TRUE
+---
+
+# This is my First Program
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = 'C:/Users/ashok/Desktop/MscDsII/6.Software lab in R/idea/')
+```
+
+Default values are put as part of the below code
+
+`{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+`
+
+
+```{r  include=FALSE,echo=FALSE}
+# Set Working Directory
+setwd("C:/Users/ashok/Desktop/MscDsII/6.Software lab in R/idea/")
+getwd()
+
+```
+
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+### Small Demo on what all is possible with R Markdown
+- Bullet points
+- *italics*
+- **bold**
+- `code - Your code will be highlighted like this`
+- [RMarkdown Home](rmarkdown.rstudio.com)
+- [RMarkdown Useful resource](https://holtzy.github.io/Pimp-my-rmd/)
+- Albert Einstein's Theory of relativity Eqation $E = MC^{2}$
+
+```{r cars}
+cars
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r fig.height=3,fig.width=4}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

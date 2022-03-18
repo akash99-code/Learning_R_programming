@@ -1,0 +1,146 @@
+---
+title: "Assignment 1"
+output: html_document
+---
+``` Akash Bairagi (21227) ```
+-------------------------------------------------------------------------------
+
+```{r}
+library("readr")
+library("tidyverse")
+library("moments")
+insurance_data = read_csv("insurance.csv")
+```
+
+# EDA
+
+### 1. Find the shape of the data,data type of individual columns
+```{r}
+dim(insurance_data)
+names(insurance_data)
+str(insurance_data)
+
+```
+
+### 2.Descriptive stats of numerical columns
+```{r}
+
+datanum = select_if(insurance_data, is.numeric)
+summary(datanum)
+
+```
+
+### 3.Find the distribution of numerical columns and the asssociated skeweness
+```{r}
+datanum %>%
+  gather() %>%
+  group_by(key) %>%
+  mutate(skewness = moments::skewness(value),
+         label = paste0(key, "\n","Skewness: ", round(skewness, 2))) %>%
+  ggplot(aes(value)) +
+  facet_wrap(~ label, scales = "free", ncol = 2, strip.position = "bottom") +
+  geom_histogram(aes(y = ..density..), binwidth = 1, fill = "grey") +
+  geom_density(colour = "black")
+```
+
+### 4.Are there any outliers for Numeric features (Use Box Plots)
+```{r}
+FindOutliers <- function(data) {
+  lowerq = quantile(data)[2]
+  upperq = quantile(data)[4]
+  iqr = IQR(data)
+  uppThresh = (iqr * 1.5) + upperq
+  lowThresh = lowerq - (iqr * 1.5)
+  result <- which(data > uppThresh | data < lowThresh)
+  return(length(result))
+}
+
+datanum %>%
+  gather() %>%
+  group_by(key) %>%
+  mutate(outlier = FindOutliers(value),
+         label = paste0(key, "\n","Outliers - ", outlier)) %>%
+  ggplot(aes(y=value)) +
+  facet_wrap(~ label, scales = "free", ncol = 2, strip.position = "bottom") +
+  geom_boxplot()
+```
+
+# Data Visualization
+
+### 1. Does Smokers pay more insurance amount than non-smokers? What are your observations ?
+```{r}
+res = setNames(aggregate(insurance_data['expenses'], list(insurance_data$smoker), mean), c("smoker","mean_insurance_amount"))
+res[1,1]="non-smoker"
+res[2,1]="smoker"
+res
+pie(res$mean_insurance_amount, res$smoker, main="Mean Insurace Amount")
+```
+
+
+Thus smokers pay More insurance than non-smokers.
+
+
+
+### 3. Does People with Higher BMI pay Higher insurance amount than those with lower BMI ? What are your observations ?
+```{r}
+ggplot(insurance_data, aes(bmi, expenses)) +
+geom_point()+
+geom_smooth(method=lm)+
+annotate(x=45, y=60000,
+label=paste("R = ", round(cor(insurance_data$bmi, insurance_data$expenses),3)),
+geom="text", size=4)
+```
+
+We cannot say with 100% confidence that People with Higher BMI pay Higher insurance amount than those with lower BMI. It depends on other conditions as well.
+
+
+### 3. Can we comment about the effect of age on insurance amount being paid?
+```{r}
+ggplot(insurance_data, aes(age, expenses)) +
+  geom_point()+
+  geom_smooth(method=lm)+
+  annotate(x=45, y=60000,
+           label=paste("R = ", round(cor(insurance_data$age, insurance_data$expenses),3)),
+           geom="text", size=4)
+```
+
+Therefore, we observe that higher the age higher is the insurance amount.
+
+
+### 4. is Some Region paying more insurance charges than other regions ?
+```{r}
+res = setNames(aggregate(insurance_data['expenses'], list(insurance_data$region), mean), c("region","mean"))
+res= merge(setNames(aggregate(insurance_data['expenses'], list(insurance_data$region), sum), c("region","sum")), res)
+res
+ggplot(res, aes(region, sum)) +
+geom_bar(stat= "identity")+
+geom_text(aes(label= signif(mean)),color='pink', position=position_stack(vjust = 0.5))
+```
+
+Southeast region pays more insurance charges copared to  other regions.
+
+
+
+### 5. What is the distribution of charges ? is it skewed ? What are your observations ?
+```{r}
+ggplot(insurance_data, aes(expenses)) +
+geom_density(colour = "black")+
+annotate(x=40000, y=4e-05,
+label=paste("Skewness = ", moments::skewness(insurance_data$expenses)),
+geom="text", size=4)
+```
+
+
+
+### 6. What's the inference from the Pairplot of Numeric Variables
+```{r}
+library(GGally)
+ggpairs(data=datanum)+theme_bw()
+```
+
+
+
+### 7. Save the Pairplot as Jpeg/SVG files.
+```{r}
+jpeg("tips_pairs_plot.jpg")
+```

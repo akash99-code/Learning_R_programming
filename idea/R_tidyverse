@@ -1,0 +1,38 @@
+######### R tidyverse
+
+#Pre-requisites
+There are four things you need to run the code in this book:
+R, RStudio, a collection of R packages called the tidyverse, and a handful of other packages.
+
+# Install tidyverse
+install.packages("tidyverse")
+
+# Load tidyverse
+Once you have installed a package, you can load it with the library() function:
+library(tidyverse)
+
+####### Packages Loaded
+This tells you that tidyverse is loading the 
+ggplot2,
+tibble,
+tidyr,
+readr,
+purrr,
+and dplyr packages. 
+These are considered to be the core of the tidyverse because you’ll use them in almost every analysis
+
+### Upadting tidyverse
+Packages in the tidyverse change fairly frequently.
+You can see if updates are available, and optionally install them, by running tidyverse_update().
+
+### Packages - Datasets used in tidyverse
+install.packages(c("nycflights13", "gapminder", "Lahman"))
+These packages provide data on airline flights, world development,
+and baseball that we’ll use to illustrate key data science ideas.
+
+########
+The easiest way to include data in a question is to use dput() to generate the R code to recreate it.
+
+
+
+
